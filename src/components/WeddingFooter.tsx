@@ -6,7 +6,7 @@ const WeddingFooter = () => {
       <div className="container mx-auto px-4">
         <Heart className="inline-block text-wedding-accent mb-3" size={24} fill="#FDF7FF" />
         <p className="font-cursive text-3xl text-wedding-accent mb-3">
-          Иван & Елена
+          Данил & Ксения
         </p>
         <p className="text-sm mb-1">С нетерпением ждем встречи с вами!</p>
         <p className="text-sm text-wedding-text/80">

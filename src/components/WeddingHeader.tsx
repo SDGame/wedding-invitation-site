@@ -7,7 +7,7 @@ const WeddingHeader = () => {
         <Heart className="inline-block text-wedding-accent" size={32} strokeWidth={1.5} fill="#FDF7FF" />
       </div>
       <h1 className="font-cursive text-5xl md:text-7xl tracking-wide text-wedding-accent mb-3">
-        Иван & Елена
+        Данил & Ксения
       </h1>
       <div className="divider mx-auto w-3/4 max-w-md mb-4"></div>
       <p className="font-elegant text-xl italic mb-4">
