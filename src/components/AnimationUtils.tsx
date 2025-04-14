@@ -68,3 +68,14 @@ export const FadeIn = ({
     </div>
   );
 };
+
+interface WavyLineProps {
+  className?: string;
+  width?: string;
+}
+
+export const WavyLine = ({ className = "", width = "w-1/2" }: WavyLineProps) => {
+  return (
+    <div className={`wavy-line ${width} mx-auto ${className}`}></div>
+  );
+};
