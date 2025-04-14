@@ -1,121 +1,70 @@
-import React, { useEffect, useRef, ReactNode } from 'react';
+import { ReactNode, useEffect, useState, useRef } from "react";
 
-// Компонент для анимации при прокрутке
+type Direction = "up" | "down" | "left" | "right";
+
 interface FadeInProps {
   children: ReactNode;
-  direction?: 'up' | 'down' | 'left' | 'right';
+  direction?: Direction;
   delay?: number;
-  threshold?: number;
+  duration?: number;
   className?: string;
 }
 
-export const FadeIn: React.FC<FadeInProps> = ({
-  children,
-  direction = 'up',
-  delay = 0,
-  threshold = 0.1,
-  className = '',
-}) => {
-  const ref = useRef<HTMLDivElement>(null);
-  
+export const FadeIn = ({ 
+  children, 
+  direction = "up", 
+  delay = 0, 
+  duration = 800, 
+  className = "" 
+}: FadeInProps) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const domRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            if (ref.current) {
-              ref.current.classList.add('visible');
-            }
-          }
-        });
-      },
-      { threshold }
-    );
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.unobserve(entry.target);
+        }
+      });
+    });
     
-    if (ref.current) {
-      observer.observe(ref.current);
+    const { current } = domRef;
+    if (current) {
+      observer.observe(current);
     }
     
     return () => {
-      if (ref.current) {
-        observer.unobserve(ref.current);
+      if (current) {
+        observer.unobserve(current);
       }
     };
-  }, [threshold]);
-  
-  const getAnimationClass = () => {
+  }, []);
+
+  const getTransform = () => {
     switch (direction) {
-      case 'up':
-        return 'transform translate-y-16';
-      case 'down':
-        return 'transform -translate-y-16';
-      case 'left':
-        return 'transform translate-x-16';
-      case 'right':
-        return 'transform -translate-x-16';
-      default:
-        return 'transform translate-y-16';
+      case "up": return "translateY(20px)";
+      case "down": return "translateY(-20px)";
+      case "left": return "translateX(20px)";
+      case "right": return "translateX(-20px)";
+      default: return "translateY(20px)";
     }
   };
-  
-  const delayStyle = delay ? { transitionDelay: `${delay}ms` } : {};
-  
+
   return (
-    <div 
-      ref={ref} 
-      className={`animate-on-scroll opacity-0 ${getAnimationClass()} ${className}`}
-      style={delayStyle}
+    <div
+      ref={domRef}
+      className={`${className}`}
+      style={{
+        opacity: isVisible ? 1 : 0,
+        transform: isVisible ? "translate(0, 0)" : getTransform(),
+        transition: `opacity ${duration}ms ease-out, transform ${duration}ms ease-out`,
+        transitionDelay: `${delay}ms`,
+        willChange: "opacity, transform",
+      }}
     >
       {children}
     </div>
   );
 };
-
-// Компонент для пульсирующей анимации
-interface PulseProps {
-  children: ReactNode;
-  intensity?: 'soft' | 'medium' | 'hard';
-  className?: string;
-}
-
-export const Pulse: React.FC<PulseProps> = ({
-  children,
-  intensity = 'soft',
-  className = '',
-}) => {
-  const getIntensityClass = () => {
-    switch (intensity) {
-      case 'soft':
-        return 'animate-pulse-soft';
-      case 'medium':
-        return 'animate-pulse';
-      case 'hard':
-        return 'animate-ping';
-      default:
-        return 'animate-pulse-soft';
-    }
-  };
-  
-  return (
-    <div className={`${getIntensityClass()} ${className}`}>
-      {children}
-    </div>
-  );
-};
-
-// Компонент для анимированной волнистой линии
-interface WavyLineProps {
-  width?: string;
-  className?: string;
-}
-
-export const WavyLine: React.FC<WavyLineProps> = ({
-  width = 'w-1/2',
-  className = '',
-}) => {
-  return (
-    <div className={`wavy-line ${width} mx-auto ${className}`}></div>
-  );
-};
-
-export default { FadeIn, Pulse, WavyLine };
